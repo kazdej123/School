@@ -1,0 +1,6 @@
+﻿namespace School
+{
+	class School
+	{
+	}
+}
