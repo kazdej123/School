@@ -2,6 +2,6 @@
 {
 	public sealed class Student : SchoolHuman
 	{
-		public Class Class { get; }
+		public Student(int? studentId) : base(studentId) { }
 	}
 }

@@ -2,6 +2,6 @@
 {
 	public sealed class Teacher : SchoolHuman
 	{
-		public Subject Subject { get; }
+		public Teacher(int? teacherId) : base(teacherId) { }
 	}
 }

@@ -1,48 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace School
 {
-	public sealed class Subject : SchoolObject
+	public sealed class Subject : SchoolObject<string>
 	{
-		private int _teachersCounter = 0;
+		private int _lessonsNumber;
+		private int _tasksNumber;
 
-		public int LessonsNumber { set; get; }
+		public Subject(string subjectName) : base(subjectName) { }
 
-		public int TasksNumber { set; get; }
+		public NullableIntTeacherDictionary TeachersDictionary { get; }
+			= new NullableIntTeacherDictionary();
 
-		public Dictionary<int, Teacher> TeachersDictionary { get; }
-			= new Dictionary<int, Teacher>();
+		public string Name => UniqueId;
+
+		public int LessonsNumber {
+			get => _lessonsNumber;
+			set {
+				if (value >= 0) {
+					_lessonsNumber = value;
+				} else {
+					throw new ArgumentOutOfRangeException();
+				}
+			}
+		}
+
+		public int TasksNumber {
+			get => _tasksNumber;
+			set {
+				if (value >= 0) {
+					_tasksNumber = value;
+				} else {
+					throw new ArgumentOutOfRangeException();
+				}
+			}
+		}
 
 		public bool AddTeacher(Teacher teacher)
-		{
-			try {
-				TeachersDictionary.Add(teacher.Id, teacher);
-				return true;
-			} catch (ArgumentException) {
-				return false;
-			}
-		}
+			=> TeachersDictionary.Add(teacher);
 
-		public bool AddTeacher()
-		{
-			try {
-				TeachersDictionary.Add(++_teachersCounter, new Teacher());
-				return true;
-			} catch (ArgumentException) {
-				return false;
-			}
-		}
+		public bool AddTeacher(int? teacherId)
+			=> TeachersDictionary.Add(new Teacher(teacherId));
 
-		public bool RemoveTeacher(int teacherId)
-		{
-			return TeachersDictionary.Remove(teacherId);
-		}
+		public bool RemoveTeacher(int? teacherId)
+			=> TeachersDictionary.Remove(teacherId);
 
-		public Teacher GetTeacher(int teacherId)
-		{
-			_ = TeachersDictionary.TryGetValue(teacherId, out Teacher teacher);
-			return teacher;
-		}
+		public Teacher GetTeacher(int? teacherId)
+			=> TeachersDictionary.Get(teacherId);
 	}
 }

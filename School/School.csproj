@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Aliases.cs" />
+    <Compile Include="GenericDictionary.cs" />
     <Compile Include="Class.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchoolHuman.cs" />

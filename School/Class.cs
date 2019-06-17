@@ -1,46 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace School
+﻿namespace School
 {
-	public sealed class Class : SchoolObject
+	public sealed class Class : SchoolObject<string>
 	{
-		private int _studentsCounter = 0;
+		private int _teachersNumber;
 
-		public int TeachersNumber { set; get; } = 0;
+		public Class(string className) : base(className) { }
 
-		public Dictionary<int, Student> StudentsDictionary { get; }
-			= new Dictionary<int, Student>();
+		public NullableIntStudentDictionary StudentsDictionary { get; }
+			= new NullableIntStudentDictionary();
+
+		public string Name => UniqueId;
+
+		public int TeachersNumber {
+			get => _teachersNumber;
+			set {
+				if (value >= 0) {
+					_teachersNumber = value;
+				} else {
+					throw new System.ArgumentOutOfRangeException();
+				}
+			}
+		}
 
 		public bool AddStudent(Student student)
-		{
-			try {
-				StudentsDictionary.Add(student.Id, student);
-				return true;
-			} catch (ArgumentException) {
-				return false;
-			}
-		}
+			=> StudentsDictionary.Add(student);
 
-		public bool AddStudent()
-		{
-			try {
-				StudentsDictionary.Add(++_studentsCounter, new Student());
-				return true;
-			} catch (ArgumentException) {
-				return false;
-			}
-		}
+		public bool AddStudent(int? studentId)
+			=> StudentsDictionary.Add(new Student(studentId));
 
-		public bool RemoveStudent(int studentId)
-		{
-			return StudentsDictionary.Remove(studentId);
-		}
+		public bool RemoveStudent(int? studentId)
+			=> StudentsDictionary.Remove(studentId);
 
-		public Student GetStudent(int studentId)
-		{
-			_ = StudentsDictionary.TryGetValue(studentId, out Student student);
-			return student;
-		}
+		public Student GetStudent(int? studentId)
+			=> StudentsDictionary.Get(studentId);
 	}
 }

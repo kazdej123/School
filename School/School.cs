@@ -1,158 +1,71 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace School
+﻿namespace School
 {
 	public sealed class School
 	{
-		public Dictionary<string, Class> ClassesDictionary { get; }
-			= new Dictionary<string, Class>();
+		public StringClassDictionary ClassesDictionary { get; }
+			= new StringClassDictionary();
 
-		public Dictionary<string, Subject> SubjectsDictionary { get; }
-			= new Dictionary<string, Subject>();
+		public StringSubjectDictionary SubjectsDictionary { get; }
+			= new StringSubjectDictionary();
 
 		public bool AddClass(Class @class)
-		{
-			try {
-				ClassesDictionary.Add(@class.Name, @class);
-				return true;
-			} catch (ArgumentException) {
-				return false;
-			}
-		}
+			=> ClassesDictionary.Add(@class);
 
 		public bool AddClass(string className)
-		{
-			try {
-				ClassesDictionary.Add(className, new Class());
-				return true;
-			} catch (ArgumentException) {
-				return false;
-			}
-		}
+			=> AddClass(new Class(className));
 
 		public bool RemoveClass(string className)
-		{
-			return ClassesDictionary.Remove(className);
-		}
+			=> ClassesDictionary.Remove(className);
 
 		public Class GetClass(string className)
-		{
-			_ = ClassesDictionary.TryGetValue(className, out Class @class);
-			return @class;
-		}
+			=> ClassesDictionary.Get(className);
 
-		public bool AddStudent(Student student)
-		{
-			return student.Class.AddStudent(student);
-		}
+		public bool AddStudent(Class @class, Student student)
+			=> @class == null ? false : @class.AddStudent(student);
 
-		public bool AddStudent(string className)
-		{
-			return GetClass(className).AddStudent();
-		}
+		public bool AddStudent(string className, Student student)
+			=> AddStudent(GetClass(className), student);
 
-		public bool RemoveStudent(int studentId, string className)
-		{
-			return GetClass(className).RemoveStudent(studentId);
-		}
+		public bool RemoveStudent(Class @class, int? studentId)
+			=> @class == null ? false : @class.RemoveStudent(studentId);
 
-		public Student GetStudent(int studentId, string className)
-		{
-			return GetClass(className).GetStudent(studentId);
-		}
+		public bool RemoveStudent(string className, int? studentId)
+			=> RemoveStudent(GetClass(className), studentId);
 
-		public Dictionary<int, Student> GetStudentsDictionaryByClass(string className)
-		{
-			return GetClass(className).StudentsDictionary;
-		}
+		public Student GetStudent(Class @class, int? studentId)
+			=> @class?.GetStudent(studentId);
 
-		public Dictionary<KeyValuePair<int, string>, Student> GetAllStudentsDictionary()
-		{
-			var studentsDictionary = new Dictionary<KeyValuePair<int, string>, Student>();
-
-			foreach (var @class in ClassesDictionary.Values) {
-				foreach (var student in @class.StudentsDictionary.Values) {
-					try {
-						studentsDictionary.Add(new KeyValuePair<int, string>(student.Id, @class.Name), student);
-					} catch (ArgumentException) {
-						return null;
-					}
-				}
-			}
-			return studentsDictionary;
-		}
+		public Student GetStudent(string className, int? studentId)
+			=> GetStudent(GetClass(className), studentId);
 
 		public bool AddSubject(Subject subject)
-		{
-			try {
-				SubjectsDictionary.Add(subject.Name, subject);
-				return true;
-			} catch (ArgumentException) {
-				return false;
-			}
-		}
+			=> SubjectsDictionary.Add(subject);
 
 		public bool AddSubject(string subjectName)
-		{
-			try {
-				SubjectsDictionary.Add(subjectName, new Subject());
-				return true;
-			} catch (ArgumentException) {
-				return false;
-			}
-		}
+			=> AddSubject(new Subject(subjectName));
 
 		public bool RemoveSubject(string subjectName)
-		{
-			return SubjectsDictionary.Remove(subjectName);
-		}
+			=> SubjectsDictionary.Remove(subjectName);
 
 		public Subject GetSubject(string subjectName)
-		{
-			_ = SubjectsDictionary.TryGetValue(subjectName, out Subject subject);
-			return subject;
-		}
+			=> SubjectsDictionary.Get(subjectName);
 
-		public bool AddTeacher(Teacher teacher)
-		{
-			return teacher.Subject.AddTeacher(teacher);
-		}
+		public bool AddTeacher(Subject subject, Teacher teacher)
+			=> subject == null ? false : subject.AddTeacher(teacher);
 
-		public bool AddTeacher(string subjectName)
-		{
-			return GetSubject(subjectName).AddTeacher();
-		}
+		public bool AddTeacher(string subjectName, Teacher teacher)
+			=> AddTeacher(GetSubject(subjectName), teacher);
 
-		public bool RemoveTeacher(int teacherId, string subjectName)
-		{
-			return GetSubject(subjectName).RemoveTeacher(teacherId);
-		}
+		public bool RemoveTeacher(Subject subject, int? teacherId)
+			=> subject == null ? false : subject.RemoveTeacher(teacherId);
 
-		public Teacher GetTeacher(int teacherId, string subjectName)
-		{
-			return GetSubject(subjectName).GetTeacher(teacherId);
-		}
+		public bool RemoveTeacher(string subjectName, int? teacherId)
+			=> RemoveTeacher(GetSubject(subjectName), teacherId);
 
-		public Dictionary<int, Teacher> GetTeachersDictionaryBySubject(string subjectName)
-		{
-			return GetSubject(subjectName).TeachersDictionary;
-		}
+		public Teacher GetTeacher(Subject subject, int? teacherId)
+			=> subject?.GetTeacher(teacherId);
 
-		public Dictionary<KeyValuePair<int, string>, Teacher> GetAllTeachersDictionary()
-		{
-			var teachersDictionary = new Dictionary<KeyValuePair<int, string>, Teacher>();
-
-			foreach (var subject in SubjectsDictionary.Values) {
-				foreach (var teacher in subject.TeachersDictionary.Values) {
-					try {
-						teachersDictionary.Add(new KeyValuePair<int, string>(teacher.Id, subject.Name), teacher);
-					} catch (ArgumentException) {
-						return null;
-					}
-				}
-			}
-			return teachersDictionary;
-		}
+		public Teacher GetTeacher(string subjectName, int? teacherId)
+			=> GetTeacher(GetSubject(subjectName), teacherId);
 	}
 }
